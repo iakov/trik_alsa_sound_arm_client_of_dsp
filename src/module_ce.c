@@ -203,10 +203,15 @@ static int do_transcodeFrame(CodecEngine* _ce,
 {
   if (_ce->m_srcBuffer == NULL || _ce->m_dstBuffer == NULL)
     return ENOTCONN;
-  if (   _srcFramePtr == NULL || _dstFramePtr == NULL
+//  if (   _srcFramePtr == NULL || _dstFramePtr == NULL
+//      || _targetDetectParams == NULL || _targetDetectCommand == NULL
+//      || _targetLocation == NULL || _targetDetectParamsResult == NULL)
+//    return EINVAL;
+  if (   _dstFramePtr == NULL
       || _targetDetectParams == NULL || _targetDetectCommand == NULL
       || _targetLocation == NULL || _targetDetectParamsResult == NULL)
     return EINVAL;
+
   if (_srcFrameSize > _ce->m_srcBufferSize || _dstFrameSize > _ce->m_dstBufferSize)
     return ENOSPC;
 
@@ -245,7 +250,8 @@ static int do_transcodeFrame(CodecEngine* _ce,
   tcOutBufDesc.bufSizes[0] = _dstFrameSize;
 
 #warning This memcpy is blocking high fps
-  memcpy(_ce->m_srcBuffer, _srcFramePtr, _srcFrameSize);
+  //memcpy(_ce->m_srcBuffer, _srcFramePtr, _srcFrameSize);
+  memset(_ce->m_srcBuffer, 0, sizeof(_ce->m_srcBuffer));
 
   Memory_cacheWbInv(_ce->m_srcBuffer, _ce->m_srcBufferSize); // invalidate and flush *whole* cache, not only written portion, just in case
   Memory_cacheInv(_ce->m_dstBuffer, _ce->m_dstBufferSize); // invalidate *whole* cache, not only expected portion, just in case
@@ -413,11 +419,14 @@ int codecEngineStart(CodecEngine* _ce, const CodecEngineConfig* _config,
   if (_ce->m_handle == NULL)
     return ENOTCONN;
 
+  fprintf(stderr, "do_memoryAlloc \n");
   if ((res = do_memoryAlloc(_ce, _srcImageDesc->m_imageSize, _dstImageDesc->m_imageSize)) != 0)
     return res;
 
+  fprintf(stderr, "do_setupCodec \n");
   if ((res = do_setupCodec(_ce, _config->m_codecName, _srcImageDesc, _dstImageDesc)) != 0)
   {
+	  fprintf(stderr, "Error of setup codec: %d \n", res);
     do_memoryFree(_ce);
     return res;
   }
