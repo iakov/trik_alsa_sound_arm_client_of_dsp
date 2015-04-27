@@ -1,0 +1,1 @@
+../vidtranscode_cv/trik_vidtranscode_cv.h
