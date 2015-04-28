@@ -415,11 +415,9 @@ int codecEngineStart(CodecEngine* _ce, const CodecEngineConfig* _config,
   if (_ce->m_handle == NULL)
     return ENOTCONN;
 
-  fprintf(stderr, "do_memoryAlloc \n");
   if ((res = do_memoryAlloc(_ce, _srcImageDesc->m_imageSize, _dstImageDesc->m_imageSize)) != 0)
     return res;
 
-  fprintf(stderr, "do_setupCodec \n");
   if ((res = do_setupCodec(_ce, _config->m_codecName, _srcImageDesc, _dstImageDesc)) != 0)
   {
 	  fprintf(stderr, "Error of setup codec: %d \n", res);

@@ -12,12 +12,11 @@
 #include "internal/runtime.h"
 #include "internal/module_ce.h"
 #include "internal/module_fb.h"
-#include "internal/module_v4l2.h"
 
 #define FrameSourceSize		153600
 #define ImageSourceFormat	1448695129
 
-
+// Video thread loop cycle
 static int threadVideoSelectLoop(Runtime* _runtime, CodecEngine* _ce, FBOutput* _fb)
 {
   int res;
@@ -27,9 +26,8 @@ static int threadVideoSelectLoop(Runtime* _runtime, CodecEngine* _ce, FBOutput* 
 
   const void* frameSrcPtr;
   size_t frameSrcSize;
-  size_t frameSrcIndex;
 
-  char buffer1[FrameSourceSize];
+  char buffer1[FrameSourceSize]; // Buffer with image
 
   TargetDetectParams  targetDetectParams;
   TargetDetectCommand targetDetectCommand;
@@ -64,17 +62,12 @@ static int threadVideoSelectLoop(Runtime* _runtime, CodecEngine* _ce, FBOutput* 
   }
 
   size_t frameDstUsed = frameDstSize;
-
-  frameSrcIndex = 0;
   frameSrcSize = FrameSourceSize;
-  frameSrcPtr = buffer1;
-  memset(frameSrcPtr, 0, frameSrcSize);
 
-  fprintf(stderr, "frameSrcPtr: %p\n", frameSrcPtr);
-  fprintf(stderr, "frameSrcSize: %d\n", frameSrcSize);
-  fprintf(stderr, "frameDstPtr: %p\n", frameDstPtr);
-  fprintf(stderr, "frameDstSize: %d\n", frameDstSize);
-  fprintf(stderr, "frameSrcIndex: %d\n", frameSrcIndex);
+  memset(buffer1, 0, frameSrcSize);
+
+  frameSrcPtr = buffer1;
+
 
   if ((res = codecEngineTranscodeFrame(_ce,
                                        frameSrcPtr, frameSrcSize,
@@ -118,7 +111,7 @@ static int threadVideoSelectLoop(Runtime* _runtime, CodecEngine* _ce, FBOutput* 
   return 0;
 }
 
-
+// Video thread
 void* threadVideo(void* _arg)
 {
 	intptr_t exit_code = 0;
