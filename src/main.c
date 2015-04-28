@@ -9,9 +9,6 @@
 
 #include "internal/runtime.h"
 
-
-
-
 static sig_atomic_t s_signalTerminate = false;
 static void sigterm_action(int _signal, siginfo_t* _siginfo, void* _context)
 {

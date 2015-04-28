@@ -16,6 +16,20 @@
 #define FrameSourceSize		153600
 #define ImageSourceFormat	1448695129
 
+volatile long long proc_frames = 0;
+
+// Measure speed in FPS
+int InputReportFPS(long long _ms)
+{
+	long long kfps = (proc_frames * 1000 * 1000) / _ms;
+
+	fprintf(stderr, "Process speed %llu.%03llu fps\n", kfps/1000, kfps%1000);
+	fprintf(stderr, "Processed %llu frames\n", proc_frames);
+	proc_frames = 0;
+
+	return 0;
+}
+
 // Video thread loop cycle
 static int threadVideoSelectLoop(Runtime* _runtime, CodecEngine* _ce, FBOutput* _fb)
 {
@@ -107,6 +121,8 @@ static int threadVideoSelectLoop(Runtime* _runtime, CodecEngine* _ce, FBOutput* 
       }
       break;
   }
+
+  proc_frames ++;
 
   return 0;
 }
@@ -208,8 +224,8 @@ void* threadVideo(void* _arg)
 			if ((res = codecEngineReportLoad(ce, last_fps_report_elapsed_ms)) != 0)
 				fprintf(stderr, "codecEngineReportLoad() failed: %d\n", res);
 
-//			if ((res = v4l2InputReportFPS(v4l2, last_fps_report_elapsed_ms)) != 0)
-//				fprintf(stderr, "v4l2InputReportFPS() failed: %d\n", res);
+			if ((res = InputReportFPS(last_fps_report_elapsed_ms)) != 0)
+				fprintf(stderr, "InputReportFPS() failed: %d\n", res);
 
 		}
 
