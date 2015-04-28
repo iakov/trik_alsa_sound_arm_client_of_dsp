@@ -203,11 +203,7 @@ static int do_transcodeFrame(CodecEngine* _ce,
 {
   if (_ce->m_srcBuffer == NULL || _ce->m_dstBuffer == NULL)
     return ENOTCONN;
-//  if (   _srcFramePtr == NULL || _dstFramePtr == NULL
-//      || _targetDetectParams == NULL || _targetDetectCommand == NULL
-//      || _targetLocation == NULL || _targetDetectParamsResult == NULL)
-//    return EINVAL;
-  if (   _dstFramePtr == NULL
+  if (   _srcFramePtr == NULL || _dstFramePtr == NULL
       || _targetDetectParams == NULL || _targetDetectCommand == NULL
       || _targetLocation == NULL || _targetDetectParamsResult == NULL)
     return EINVAL;
@@ -250,8 +246,8 @@ static int do_transcodeFrame(CodecEngine* _ce,
   tcOutBufDesc.bufSizes[0] = _dstFrameSize;
 
 #warning This memcpy is blocking high fps
-  //memcpy(_ce->m_srcBuffer, _srcFramePtr, _srcFrameSize);
-  memset(_ce->m_srcBuffer, 0, sizeof(_ce->m_srcBuffer));
+  memcpy(_ce->m_srcBuffer, _srcFramePtr, _srcFrameSize);
+  //memset(_ce->m_srcBuffer, 0, _srcFrameSize);
 
   Memory_cacheWbInv(_ce->m_srcBuffer, _ce->m_srcBufferSize); // invalidate and flush *whole* cache, not only written portion, just in case
   Memory_cacheInv(_ce->m_dstBuffer, _ce->m_dstBufferSize); // invalidate *whole* cache, not only expected portion, just in case
