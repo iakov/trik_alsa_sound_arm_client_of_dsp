@@ -12,9 +12,6 @@
 #include "internal/runtime.h"
 #include "internal/module_rc.h"
 
-
-
-
 static int threadInputSelectLoop(Runtime* _runtime, RCInput* _rc)
 {
   int res;
@@ -87,7 +84,6 @@ static int threadInputSelectLoop(Runtime* _runtime, RCInput* _rc)
     }
   }
 
-
   TargetDetectCommand targetDetectCommand;
   if ((res = rcInputGetTargetDetectCommand(_rc, &targetDetectCommand)) != 0)
   {
@@ -109,9 +105,6 @@ static int threadInputSelectLoop(Runtime* _runtime, RCInput* _rc)
   return 0;
 }
 
-
-
-
 void* threadInput(void* _arg)
 {
   int res = 0;
@@ -131,7 +124,6 @@ void* threadInput(void* _arg)
     goto exit;
   }
 
-
   if ((res = rcInputOpen(rc, runtimeCfgRCInput(runtime))) != 0)
   {
     fprintf(stderr, "rcInputOpen() failed: %d\n", res);
@@ -139,14 +131,12 @@ void* threadInput(void* _arg)
     goto exit;
   }
 
-
   if ((res = rcInputStart(rc)) != 0)
   {
     fprintf(stderr, "rcInputStart() failed: %d\n", res);
     exit_code = res;
     goto exit_rc_close;
   }
-
 
   printf("Entering input thread loop\n");
   while (!runtimeGetTerminate(runtime))
@@ -160,16 +150,13 @@ void* threadInput(void* _arg)
   }
   printf("Left input thread loop\n");
 
-
  exit_rc_stop:
   if ((res = rcInputStop(rc)) != 0)
     fprintf(stderr, "rcInputStop() failed: %d\n", res);
 
-
  exit_rc_close:
   if ((res = rcInputClose(rc)) != 0)
     fprintf(stderr, "rcInputClose() failed: %d\n", res);
-
 
  exit:
   runtimeSetTerminate(runtime);

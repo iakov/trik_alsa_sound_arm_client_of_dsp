@@ -78,6 +78,8 @@ static int threadVideoSelectLoop(Runtime* _runtime, CodecEngine* _ce, FBOutput* 
   size_t frameDstUsed = frameDstSize;
   frameSrcSize = FrameSourceSize;
 
+
+  // This is a buffer to send to DSP
   memset(buffer1, 0, frameSrcSize);
 
   frameSrcPtr = buffer1;

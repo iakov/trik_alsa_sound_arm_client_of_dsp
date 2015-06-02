@@ -1,1 +1,1 @@
-../vidtranscode_cv/trik_vidtranscode_cv.h
+/home/vrxfile/trik/alsa_sound_dsp/trik_vidtranscode_cv.h
